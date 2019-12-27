@@ -6,11 +6,16 @@ import (
 	"os"
 	"sartura-task/backend/controllers"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	router := mux.NewRouter()
+	corsObj := handlers.AllowedOrigins([]string{"*"})
+	corsObj = handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	corsObj = handlers.AllowedMethods([]string{"GET", "POST", "DELETE"})
+
 	router.HandleFunc("/api/order", controllers.CreateOrder).Methods("POST")
 	router.HandleFunc("/api/list", controllers.GetOrders).Methods("GET")
 	router.HandleFunc("/api/delete/{id}", controllers.DeleteOrder).Methods("DELETE")
@@ -22,7 +27,7 @@ func main() {
 
 	fmt.Println(port)
 
-	err := http.ListenAndServe(":"+port, router)
+	err := http.ListenAndServe(":"+port, handlers.CORS(corsObj)(router))
 	if err != nil {
 		fmt.Print(err)
 	}

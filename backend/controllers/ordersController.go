@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sartura-task/backend/models"
 	u "sartura-task/backend/utils"
@@ -37,6 +36,7 @@ var GetOrders = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var DeleteOrder = func(w http.ResponseWriter, r *http.Request) {
+
 	order := &models.Order{}
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil && id < 0 {
@@ -46,5 +46,4 @@ var DeleteOrder = func(w http.ResponseWriter, r *http.Request) {
 		order.Delete(id)
 	}
 
-	fmt.Println(id)
 }
