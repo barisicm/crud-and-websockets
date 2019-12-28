@@ -5,7 +5,7 @@
       <div class="row">
         <multiselect v-model="coinSymbol" :options="options"></multiselect>
         <div class="col-12">
-          <LivePrice></LivePrice>
+          <LivePrice :coin="coinSymbol"></LivePrice>
         </div>
       </div>
       <div class="row">
@@ -40,7 +40,7 @@ export default class App extends Vue {
   public data() {
     return {
       coinSymbol: null,
-      options: ['BTC/XLM', 'BTC/PRSN', 'BTC/ALGO'],
+      options: ['BTC/USDT', 'BTC/ETH', 'BTC/ALGO', 'ETH/USDT', 'ETH/BTC', 'ETH/XLM'],
       order: null,
     };
   }

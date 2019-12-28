@@ -19,7 +19,7 @@
                     <td>{{ order.side }}</td>
                     <td>{{ order.price }}</td>
                     <td>{{ order.amount }}</td>
-                    <td><a @click="removeOrder(order.id, index)">Delete</a></td>
+                    <td class="cursor-pointer"><a @click="removeOrder(order.id, index)">Delete</a></td>
                 </tr>
             </tbody>
         </table>
@@ -67,4 +67,8 @@ export default class ListOrders extends Vue {
 }
 </script>
 
- 
+<style lang="css">
+    .cursor-pointer{
+        cursor: pointer
+    }
+</style>

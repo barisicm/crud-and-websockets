@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-    import { Component, Prop, Vue } from 'vue-property-decorator';
+    import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
     import { Order } from '../models/Order';
     import ordersRepository from '../services/ordersRepository';
     // @ts-ignore
@@ -42,20 +42,35 @@
         private side: string = "";
         private order!: Order;
 
+
         private createOrder() {
             this.order = new Order(this.coinSymbol,"market",  this.side, this.price,this.amount);
-            ordersRepository.createOrder(qs.stringify(this.order)).then((response) => {
-                this.order.id = response.data.order.id
-            }).catch((err) => {
-                console.log(err)
-            }).finally(() => {
-                this.$emit("newOrder", this.order);
-            })
+
+            if(this.validateData(this.order)){
+                ordersRepository.createOrder(qs.stringify(this.order)).then((response) => {
+                    this.order.id = response.data.order.id
+                }).catch((err) => {
+                    console.log(err)
+                }).finally(() => {
+                    this.$emit("newOrder", this.order);
+                })
+            } else {
+                alert('Please submit correct data.')
+            }
+
+            
             
         }
 
-        //Validiraj polja i disableaj CreateOrder button
+        private validateData(order: Order){
+            if(order.symbol.length > 0 && order.side.length > 0 && order.price > 0 && order.amount > 0){
+                return true;
+            } else {
+                return false;
+            }
+        }
 
+        
     
     }
 </script>

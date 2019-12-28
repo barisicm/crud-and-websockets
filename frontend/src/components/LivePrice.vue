@@ -26,14 +26,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 // @ts-ignore
 import VueNativeSock from 'vue-native-websocket';
 import { TradeStreamData } from '../models/TradeStreamData';
 
 @Component
 export default class LivePrice extends Vue {
-    @Prop() Coin!: string;
+    @Prop() coin!: string;
+    private wss!: WebSocket;
 
     data(){
         return {
@@ -41,52 +42,59 @@ export default class LivePrice extends Vue {
         }
     }
 
-    mounted() {
+    @Watch('coin')
+    onPropertyChanged(newCoin: string, oldCoin: string) {
+        let formatedCoin = newCoin.replace("/","").toLowerCase(); 
+        if (this.wss !== undefined) {
+            this.wss.close();
+        }
+        this.wss = this.openWebSocketsConnection(formatedCoin);
+    }
 
-        //let websocketUrl :string = 'wss://stream.binance.com:9443/ws/' + this.Coin + '@aggTrade';
-        let wss = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@aggTrade');
-        // Connection opened
-        let api_key = process.env.VUE_APP_CRYPTO_API_KEY
-        wss.addEventListener('open', function (event) {
+    private openWebSocketsConnection(coinLabel: string): WebSocket {
+        const websocketUrl: string = 'wss://stream.binance.com:9443/ws/' + coinLabel + '@aggTrade';
+        const wss = new WebSocket(websocketUrl);
+        wss.addEventListener('open', (event) => {
             wss.send(JSON.stringify({
-                "method": "SUBSCRIBE",
-                "params": [
-                    "btcusdt@aggTrade"
+                'method': 'SUBSCRIBE',
+                'params': [
+                    coinLabel+'@aggTrade'
                 ],
-                "id": 1
-                }))
+                'id': 1,
+                }));
         });
 
-        let thisListRef = this.$data.tradeStreamsList
-        wss.addEventListener('message', function (event) {
-            let jsonObj = JSON.parse(event.data)
-            if(jsonObj['e']="aggTrade"){
-                console.log(jsonObj)
-                console.log(thisListRef)
-                pushToArray(jsonObj, thisListRef);
+        const thisRef = this;
+        const thisListRef = this.$data.tradeStreamsList;
+        wss.addEventListener('message', (event) => {
+            const jsonObj = JSON.parse(event.data);
+            if (jsonObj['e'] = "aggTrade") {
+                thisRef.pushToArray(jsonObj, thisListRef);
             }
         });
 
-        function pushToArray(value: any, tradeStreamsList: Array<TradeStreamData>){
-            let obj: TradeStreamData = prepeareObj(value);
-            if(tradeStreamsList.length < 7){
-                tradeStreamsList.push(obj)
-            } else {
-                tradeStreamsList.shift()
-                tradeStreamsList.push(obj)
-            }
-        }
+        return wss;
+    }
 
-        function prepeareObj(value: any): TradeStreamData{
-            let TradeStreamDataObj: TradeStreamData = new TradeStreamData(
-                value['e'],value['E'],value['s'],
-                value['a'],value['p'],value['q'],
-                value['f'],value['l'],new Date(parseInt(value['T'])),
-                value['m'],value['M'],
-            );
-            return TradeStreamDataObj
+    private pushToArray(value: any, tradeStreamsList: TradeStreamData[]) {
+        const obj: TradeStreamData = this.prepeareObj(value);
+        if (tradeStreamsList.length < 7) {
+            tradeStreamsList.push(obj);
+        } else {
+            tradeStreamsList.shift();
+            tradeStreamsList.push(obj);
         }
+    }
 
+    /* tslint:disable:no-string-literal */
+    private prepeareObj(value: any): TradeStreamData {
+        const TradeStreamDataObj: TradeStreamData = new TradeStreamData(
+            value['e'], value['E'], value['s'],
+            value['a'], value['p'], value['q'],
+            value['f'], value['l'], new Date(parseInt(value['T'])),
+            value['m'], value['M'],
+        );
+        return TradeStreamDataObj;
     }
 }
 </script>
