@@ -13,6 +13,12 @@ export default {
     },
 
     createOrder(order: Order) {
-        return Repository.post(`/order`, order);
+        return Repository.post(`/order`, order,config);
     },
 };
+
+const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+}

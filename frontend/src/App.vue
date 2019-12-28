@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div class="container">
-      <h3>Sartura task app</h3>
+      <div class="mt-4 mb-4"><h1>Price tracking</h1></div>
       <div class="row">
-        <multiselect v-model="value" :options="options"></multiselect>
+        <multiselect v-model="coinSymbol" :options="options"></multiselect>
         <div class="col-12 col-md-6">
           <LivePrice></LivePrice>
         </div>
@@ -13,10 +13,10 @@
       </div>
       <div class="row">
         <div class="col-12 col-md-8">
-          <ListOrders></ListOrders>
+          <ListOrders :newOrder="order"></ListOrders>
         </div>
         <div class="col-12 col-md-4">
-          <CreateOrder></CreateOrder>
+          <CreateOrder :coinSymbol="coinSymbol" @newOrder="addToListOrders"></CreateOrder>
         </div>
       </div>
     </div>
@@ -29,6 +29,7 @@ import CreateOrder from './components/CreateOrder.vue';
 import ListOrders from './components/ListOrders.vue';
 import LivePrice from './components/LivePrice.vue';
 import Multiselect from 'vue-multiselect';
+import { Order } from './models/Order';
 
 @Component({
   components: {
@@ -39,12 +40,18 @@ import Multiselect from 'vue-multiselect';
   },
 })
 export default class App extends Vue {
-  data() {
+  public data() {
     return {
-      value: null,
-      options: ['list', 'of', 'options'],
+      coinSymbol: null,
+      options: ['BTC/XLM', 'BTC/PRSN', 'BTC/ALGO'],
+      order: null,
     };
   }
+
+  public addToListOrders(order: Order) {
+    this.$data.order = order;
+  }
+
 }
 </script>
 

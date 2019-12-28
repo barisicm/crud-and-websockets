@@ -25,8 +25,10 @@ func (order *Order) Validate() (map[string]interface{}, bool) {
 		return u.Message(false, "Order price must be bigger than 0"), false
 	}
 
-	if order.Side != "buy" && order.Side != "sell" {
-		return u.Message(false, "Order side not set correctly"), false
+	if order.Side != "buy" {
+		if order.Side != "sell" {
+			return u.Message(false, "Order side not set correctly"), false
+		}
 	}
 
 	order.Type = "market"

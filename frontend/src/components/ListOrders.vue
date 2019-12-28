@@ -27,36 +27,42 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import ordersRepository from '../services/ordersRepository';
 import { Order } from '../models/Order';
 
 @Component
 export default class ListOrders extends Vue {
 
-    data() {
+    @Prop() newOrder!: Order;
+
+    @Watch('newOrder')
+    onPropertyChanged(newOrder: Order, oldOrder: Order) {
+        this.$data.allOrders.push(newOrder);
+    }
+
+    public data() {
         return {
-            allOrders: new Array<Order>()
-        }
+            allOrders: new Array<Order>(),
+        };
     }
 
-    mounted() {
-        let dataObjRef = this.$data.allOrders
+    public mounted() {
+        const dataObjRef = this.$data.allOrders;
         ordersRepository.getAll()
-        .then(response => {
-            if(response.data) {
+        .then((response) => {
+            if (response.data) {
                 response.data.forEach((order: Order) => {
-                    console.log(order)
-                    dataObjRef.push(order)
-                })
+                    dataObjRef.push(order);
+                });
             }
-        }).catch(err => alert(err))
+        }).catch((err) => alert(err));
     }
 
-    removeOrder(orderId: number, orderIndex: number) {
+    private removeOrder(orderId: number, orderIndex: number) {
         ordersRepository.deleteOrder(orderId).then(
-            response => this.$data.allOrders.splice(orderIndex, 1)
-        ).catch(err => alert(err))
+            (response) => this.$data.allOrders.splice(orderIndex, 1),
+        ).catch((err) => alert(err));
     }
 }
 </script>

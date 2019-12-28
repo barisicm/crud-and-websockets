@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sartura-task/backend/models"
 	u "sartura-task/backend/utils"
@@ -10,7 +11,19 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func setupResponse(w *http.ResponseWriter, req *http.Request) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+}
+
 var CreateOrder = func(w http.ResponseWriter, r *http.Request) {
+	setupResponse(&w, r)
+	if (r).Method == "OPTIONS" {
+		fmt.Println("JEBO TE JA")
+		return
+	}
+
 	order := &models.Order{}
 
 	err := json.NewDecoder(r.Body).Decode(order)
