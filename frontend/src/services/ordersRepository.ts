@@ -1,6 +1,5 @@
 import Repository from './Repository';
 import { Order } from '../models/Order';
-import { OrderList } from '@/models/OrderListInterface';
 import { AxiosResponse } from 'axios';
 
 export default {
@@ -13,12 +12,12 @@ export default {
     },
 
     createOrder(order: Order) {
-        return Repository.post(`/order`, order,config);
+        return Repository.post(`/orders`, order, config);
     },
 };
 
 const config = {
     headers: {
-      'Content-Type': 'application/json'
-    }
-}
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+    },
+};

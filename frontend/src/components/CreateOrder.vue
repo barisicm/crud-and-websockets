@@ -27,34 +27,35 @@
 </template>
 
 <script lang="ts">
-    import {
-        Component,
-        Prop,
-        Vue,
-    } from 'vue-property-decorator';
+    import { Component, Prop, Vue } from 'vue-property-decorator';
     import { Order } from '../models/Order';
     import ordersRepository from '../services/ordersRepository';
+    // @ts-ignore
+    import qs from 'qs';
 
     @Component
     export default class CreateOrder extends Vue {
         @Prop() private coinSymbol!: string;
+        
         private price: number = 0;
-        private side: string = "";
         private amount: number = 0;
+        private side: string = "";
         private order!: Order;
 
-        //Primjeni model na html
-        //query-aj bazu i dodaj novi
-        //na response dobiješ id
-        //taj ID spremi u objekt i pošalji list komponenti
         private createOrder() {
             this.order = new Order(this.coinSymbol,"market",  this.side, this.price,this.amount);
-            ordersRepository.createOrder(this.order).then((response) => {
-                console.log(response)
+            ordersRepository.createOrder(qs.stringify(this.order)).then((response) => {
+                this.order.id = response.data.order.id
             }).catch((err) => {
                 console.log(err)
+            }).finally(() => {
+                this.$emit("newOrder", this.order);
             })
-            //this.$emit("newOrder", this.order);
+            
         }
+
+        //Validiraj polja i disableaj CreateOrder button
+
+    
     }
 </script>

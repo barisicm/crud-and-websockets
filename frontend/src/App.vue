@@ -4,10 +4,7 @@
       <div class="mt-4 mb-4"><h1>Price tracking</h1></div>
       <div class="row">
         <multiselect v-model="coinSymbol" :options="options"></multiselect>
-        <div class="col-12 col-md-6">
-          <LivePrice></LivePrice>
-        </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12">
           <LivePrice></LivePrice>
         </div>
       </div>

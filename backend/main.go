@@ -14,11 +14,11 @@ func main() {
 	router := mux.NewRouter()
 
 	corsObj := handlers.AllowedOrigins([]string{"*"})
-	corsObj = handlers.AllowedHeaders([]string{"content-type"})
-	corsObj = handlers.AllowedMethods([]string{"OPTIONS", "GET", "POST", "DELETE"})
+	corsObj = handlers.AllowedHeaders([]string{"Content-Type"})
+	corsObj = handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "OPTIONS"})
 
-	router.HandleFunc("/api/order", controllers.CreateOrder).Methods("POST")
-	//router.HandleFunc("/api/order", controllers.CreateOrder).Methods("OPTIONS")
+	router.HandleFunc("/api/orders", controllers.CreateOrder).Methods("POST")
+	// router.HandleFunc("/api/order", controllers.CreateOrder).Methods("POST")
 	router.HandleFunc("/api/list", controllers.GetOrders).Methods("GET")
 	router.HandleFunc("/api/delete/{id}", controllers.DeleteOrder).Methods("DELETE")
 

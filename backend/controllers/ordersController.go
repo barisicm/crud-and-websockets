@@ -11,6 +11,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
+var CheckRequest = func(w http.ResponseWriter, r *http.Request) {
+	setupResponse(&w, r)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+}
+
 func setupResponse(w *http.ResponseWriter, req *http.Request) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
@@ -19,18 +30,25 @@ func setupResponse(w *http.ResponseWriter, req *http.Request) {
 
 var CreateOrder = func(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
-	if (r).Method == "OPTIONS" {
-		fmt.Println("JEBO TE JA")
-		return
-	}
 
 	order := &models.Order{}
+	fmt.Println(r.Body)
+	fmt.Println(r.FormValue("amount"))
+	fmt.Println(r.FormValue("price"))
+	fmt.Println(r.FormValue("side"))
+	fmt.Println(r.FormValue("type"))
+	fmt.Println(r.FormValue("symbol"))
+	fmt.Println(r.Body)
 
-	err := json.NewDecoder(r.Body).Decode(order)
-	if err != nil {
-		u.Respond(w, u.Message(false, "Error while decoding request body"))
-		return
+	if s, err := strconv.ParseFloat(r.FormValue("amount"), 64); err == nil {
+		order.Amount = float32(s)
 	}
+	if s, err := strconv.ParseFloat(r.FormValue("price"), 64); err == nil {
+		order.Price = float32(s)
+	}
+	order.Side = r.FormValue("side")
+	order.Type = r.FormValue("type")
+	order.Symbol = r.FormValue("symbol")
 
 	resp := order.Create()
 	u.Respond(w, resp)
@@ -38,7 +56,7 @@ var CreateOrder = func(w http.ResponseWriter, r *http.Request) {
 
 var GetOrders = func(w http.ResponseWriter, r *http.Request) {
 	order := &models.Order{}
-
+	fmt.Println("GetOrdersPozvan")
 	data, err := json.Marshal(order.GetOrders())
 	if err != nil {
 		u.Respond(w, u.Message(false, "Error while fetching all orders from database"))
@@ -49,7 +67,8 @@ var GetOrders = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var DeleteOrder = func(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Println("DeleteOrderPozvan")
+	fmt.Println(r.Method)
 	order := &models.Order{}
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil && id < 0 {

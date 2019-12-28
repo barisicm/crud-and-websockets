@@ -17,14 +17,15 @@ type Order struct {
 
 func (order *Order) Validate() (map[string]interface{}, bool) {
 
-	if order.Amount < 0 {
+	if order.Amount <= 0 {
 		return u.Message(false, "Order amount should be bigger than 0"), false
 	}
 
-	if order.Price < 0 {
+	if order.Price <= 0 {
 		return u.Message(false, "Order price must be bigger than 0"), false
 	}
 
+	fmt.Println(order.Side)
 	if order.Side != "buy" {
 		if order.Side != "sell" {
 			return u.Message(false, "Order side not set correctly"), false
