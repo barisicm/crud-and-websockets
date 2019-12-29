@@ -1,0 +1,6 @@
+FROM golang:1.9.2 
+ADD . /go/src/sartura-task/backend
+WORKDIR /go/src/sartura-task/backend
+RUN go get
+RUN go install
+ENTRYPOINT ["/go/bin/backend"]
