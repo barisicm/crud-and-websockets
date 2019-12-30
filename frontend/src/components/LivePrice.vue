@@ -33,18 +33,18 @@ import { TradeStreamData } from '../models/TradeStreamData';
 
 @Component
 export default class LivePrice extends Vue {
-    @Prop() coin!: string;
+    @Prop() public coin!: string;
     private wss!: WebSocket;
 
-    data(){
+    public data() {
         return {
             tradeStreamsList: new Array<TradeStreamData>(),
-        }
+        };
     }
 
     @Watch('coin')
-    onPropertyChanged(newCoin: string, oldCoin: string) {
-        let formatedCoin = newCoin.replace("/","").toLowerCase(); 
+    private onPropertyChanged(newCoin: string, oldCoin: string) {
+        const formatedCoin = newCoin.replace('/', '').toLowerCase();
         if (this.wss !== undefined) {
             this.wss.close();
         }
@@ -56,11 +56,11 @@ export default class LivePrice extends Vue {
         const wss = new WebSocket(websocketUrl);
         wss.addEventListener('open', (event) => {
             wss.send(JSON.stringify({
-                'method': 'SUBSCRIBE',
-                'params': [
-                    coinLabel+'@aggTrade'
+                method: 'SUBSCRIBE',
+                params: [
+                    coinLabel + '@aggTrade',
                 ],
-                'id': 1,
+                id: 1,
                 }));
         });
 
@@ -68,7 +68,8 @@ export default class LivePrice extends Vue {
         const thisListRef = this.$data.tradeStreamsList;
         wss.addEventListener('message', (event) => {
             const jsonObj = JSON.parse(event.data);
-            if (jsonObj['e'] = "aggTrade") {
+            const tradeType = jsonObj['e'];
+            if (tradeType === 'aggTrade') {
                 thisRef.pushToArray(jsonObj, thisListRef);
             }
         });

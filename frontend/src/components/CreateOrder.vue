@@ -35,42 +35,34 @@
 
     @Component
     export default class CreateOrder extends Vue {
-        @Prop() private coinSymbol!: string;
-        
+        @Prop() private coinSymbol!: string;        
         private price: number = 0;
         private amount: number = 0;
-        private side: string = "";
+        private side: string = '';
         private order!: Order;
 
-
         private createOrder() {
-            this.order = new Order(this.coinSymbol,"market",  this.side, this.price,this.amount);
+            this.order = new Order(this.coinSymbol, 'market', this.side, this.price, this.amount);
 
-            if(this.validateData(this.order)){
+            if (this.validateData(this.order)) {
                 ordersRepository.createOrder(qs.stringify(this.order)).then((response) => {
-                    this.order.id = response.data.order.id
+                    this.order.id = response.data.order.id;
                 }).catch((err) => {
-                    console.log(err)
+                    console.log(err);
                 }).finally(() => {
-                    this.$emit("newOrder", this.order);
-                })
+                    this.$emit('newOrder', this.order);
+                });
             } else {
-                alert('Please submit correct data.')
+                alert('Please input correct data.');
             }
-
-            
-            
         }
 
-        private validateData(order: Order){
-            if(order.symbol.length > 0 && order.side.length > 0 && order.price > 0 && order.amount > 0){
+        private validateData(order: Order) {
+            if (order.symbol.length > 0 && order.side.length > 0 && order.price > 0 && order.amount > 0) {
                 return true;
             } else {
                 return false;
             }
         }
-
-        
-    
     }
 </script>

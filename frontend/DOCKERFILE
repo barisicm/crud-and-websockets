@@ -1,13 +1,12 @@
-FROM node:lts-alpine
-
+FROM node:latest as build-stage
 WORKDIR /app
-
 COPY package*.json ./
+RUN npm install
+COPY ./ .
+RUN npm run build
 
-RUN yarn install
-
-COPY . .
-
-RUN yarn build
-
-EXPOSE 8080
+FROM nginx as production-stage
+RUN mkdir /app
+EXPOSE 9443
+COPY --from=build-stage /app/dist /app
+COPY nginx.conf /etc/nginx/nginx.conf

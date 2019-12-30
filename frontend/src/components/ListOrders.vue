@@ -33,11 +33,10 @@ import { Order } from '../models/Order';
 
 @Component
 export default class ListOrders extends Vue {
-
-    @Prop() newOrder!: Order;
+    @Prop() public newOrder!: Order;
 
     @Watch('newOrder')
-    onPropertyChanged(newOrder: Order, oldOrder: Order) {
+    private onPropertyChanged(newOrder: Order, oldOrder: Order) {
         this.$data.allOrders.push(newOrder);
     }
 
