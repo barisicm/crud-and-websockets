@@ -1,6 +1,24 @@
 FROM golang:1.9.2 
-ADD . /go/src/sartura-task/backend
-WORKDIR /go/src/sartura-task/backend
-RUN go get
-RUN go install
-ENTRYPOINT ["/go/bin/backend"]
+# ADD . /go/src/sartura-task/backend
+# WORKDIR /go/src/sartura-task/backend
+# RUN go get
+# RUN go install
+# ENTRYPOINT ["/go/bin/backend"]
+
+FROM golang:1.9.2 
+WORKDIR $GOPATH/src/sartura-task/backend
+
+# Copy everything from the current directory to the PWD(Present Working Directory) inside the container
+COPY . .
+
+# Download all the dependencies
+RUN go get -d -v .
+
+# Install the package
+RUN go install -v 
+
+# This container exposes port 8080 to the outside world
+EXPOSE 3000
+
+# Run the executable
+CMD ["backend"]
