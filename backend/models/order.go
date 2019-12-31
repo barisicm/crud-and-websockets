@@ -1,8 +1,8 @@
 package models
 
 import (
+	u "crud-and-websockets/backend/utils"
 	"fmt"
-	u "sartura-task/backend/utils"
 )
 
 // order contains the details of an order

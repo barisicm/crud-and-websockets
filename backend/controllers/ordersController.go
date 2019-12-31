@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"crud-and-websockets/backend/models"
+	u "crud-and-websockets/backend/utils"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sartura-task/backend/models"
-	u "sartura-task/backend/utils"
 	"strconv"
 
 	"github.com/gorilla/mux"

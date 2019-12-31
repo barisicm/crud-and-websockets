@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"sartura-task/backend/controllers"
+	"crud-and-websockets/backend/controllers"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
