@@ -6,7 +6,7 @@ FROM golang:1.9.2
 # ENTRYPOINT ["/go/bin/backend"]
 
 FROM golang:1.9.2 
-WORKDIR $GOPATH/src/sartura-task/backend
+WORKDIR $GOPATH/src/crud-and-websockets/backend
 
 # Copy everything from the current directory to the PWD(Present Working Directory) inside the container
 COPY . .

@@ -40,7 +40,7 @@ export default class App extends Vue {
   public data() {
     return {
       coinSymbol: null,
-      options: ['BTC/USDT', 'BTC/ETH', 'BTC/ALGO', 'ETH/USDT', 'ETH/BTC', 'ETH/XLM'],
+      options: ['BTC/USDT', 'ETH/USDT'],
       order: null,
     };
   }

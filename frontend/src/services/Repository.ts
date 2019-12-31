@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseDomain = process.env.VUE_APP_GO_API;
+const baseDomain = 'http://localhost:3000';
 const baseURL = `${baseDomain}/api`;
 
 export default axios.create({

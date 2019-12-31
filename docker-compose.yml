@@ -1,0 +1,21 @@
+version: '3'
+services:
+    backend:   
+        build:
+            context: ./backend
+            dockerfile: DOCKERFILE
+        ports:
+            - "3000:8000"
+        environment:
+            db_name: "${db_name}"
+            db_pass: "${db_pass}"
+            db_user: "${db_user}"
+            db_host: "${db_host}"
+            db_port: "${db_port}"
+            db_type: "${db_type}"
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: DOCKERFILE
+        ports: 
+            - "8080:80"
